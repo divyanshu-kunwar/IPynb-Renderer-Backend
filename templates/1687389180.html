@@ -1,0 +1,336 @@
+
+        <html>
+        <head>
+
+    <link href='static/github.css' rel='stylesheet' />
+    <link href='static/style.css' rel='stylesheet' />
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+
+    <script>
+      hljs.highlightAll();
+      hljs.initLineNumbersOnLoad();
+
+      document.addEventListener("DOMContentLoaded", (event) => {
+        document.querySelectorAll("pre").forEach((el) => {
+          // language is python
+            el.classList.add("language-python");
+          hljs.highlightElement(el);
+          hljs.lineNumbersBlock(el);
+        });
+  
+        document.querySelectorAll("pre code").forEach((el) => {
+          hljs.highlightElement(el);
+        });
+      });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ['$','$'], ['\(','\)'] ],
+                displayMath: [ ['$$','$$'], ['\[','\]'] ]
+            }
+        });
+        MathJax.Hub.Queue(function() {
+          removeDollarSigns()
+        })
+    </script>
+        
+        </head>
+            <body>
+            <div class="page">
+                <h2 class="subtitle"> Chapter 1 </h2>
+                <div class="markdown_block"><h1 class="title">Probability in Python</h1>
+</div><div class="markdown_block"><h1>Importing packages</h1>
+<p>You can ignore this part for now.</p>
+</div><div class="code_block"><pre>import numpy as np</pre></div><div class="markdown_block"><h1>Function for uniform outcome</h1>
+<script type="math/tex">$n$</script>: number of outcomes in the sample space
+
+Output: <script type="math/tex">$m$</script> outcomes selected uniformly at random from 1 to <script type="math/tex">$n$</script></div><div class="code_block"><pre>def uniform(n, m):
+  return np.random.randint(1, n+1, size = m)</pre></div><div class="markdown_block"><h1>Toss a coin</h1>
+<p>Toss once, 10 times and 100 times</p>
+<p>1: Heads and 2: Tails</p>
+</div><div class="code_block"><pre>print(uniform(2, 1))
+print(uniform(2, 10))
+print(uniform(2,100))</pre></div><div class="markdown_block"><h1>Throw a die</h1>
+<p>Throw once, 10 times and 100 times</p>
+</div><div class="code_block"><pre>print(uniform(6, 1))
+print(uniform(6, 10))
+print(uniform(6,100))</pre></div><div class="markdown_block"><h1>Estimating probability by simulation - Monte Carlo</h1>
+<p>The probability of an event <script type="math/tex">$A$</script> can be estimated as follows. We can simulate the experiment repeatedly and independently, say <script type="math/tex">$N$</script> times, and count the number of times the event occurred, say <script type="math/tex">$N_A$</script>.</p>
+<p>A good estimate of <script type="math/tex">$P(A)$</script> is the following:</p>
+<p><script type="math/tex">$$P(A) \approx \frac{N_A}{N}$$</script>
+As <script type="math/tex">$N$</script> grows larger and larger, the estimate becomes better and better. This method is generally termed as Monte Carlo simulation.</p>
+<p>We will first evaluate probability of coin toss described above using Monte Carlo simulations. There are two steps: generate a large number of tosses and count the number of heads or tails. These two steps can be written in a single loop usually.</p>
+<p>You should run the simulation multiple times to see what probability estimate is obtained each time. You will see that the estimate is close to 0.5.</p>
+</div><div class="code_block"><pre>no_heads = 0   #variable for storing number of heads
+for i in range(1000): #repeat 1000 times
+  if uniform(2, 1) == 1: #check if coin toss is heads
+    no_heads = no_heads + 1
+print(no_heads/1000) #probability estimate by Monte Carlo</pre></div><div class="markdown_block"><h1>Probability of die showing a number</h1>
+<p>We will modify the Monte Carlo simulation above for finding the probability that a dies shows a number falling in an event <script type="math/tex">$A$</script>. You will see that the estimate is close to <script type="math/tex">$P(A)$</script>. If you change the loop iterations to 10000, the estimate will be much closer to <script type="math/tex">$P(A)$</script> and more consistent as well.</p>
+</div><div class="code_block"><pre>no = 0   #variable for storing number of event occurence
+for i in range(10000): #repetitions
+  die = uniform(6,1)  #experiment
+  if die == 1 or die == 3: #Event
+    no = no + 1
+print(no/10000) #probability estimate by Monte Carlo</pre></div><div class="markdown_block"><h1>Birthday problem</h1>
+<p>In a group of <script type="math/tex">$n$</script> persons, what is the chance that some two have the same birthday? Assume birthday of a person is uniformly distributed in <script type="math/tex">$\{1,2,\ldots,365\}$</script> and is independent of all other birthdays. Most people will think that you need at least 100 persons before you start seeing same birthdays. However, surprisingly perhaps, even with 23 persons there is a 50% chance of two sharing a birthday.</p>
+<p>Event <script type="math/tex">$A$</script>: some two have same birthday</p>
+<p>Event <script type="math/tex">$A^c$</script>: no two have same birthday</p>
+<script type="math/tex">$A^c$</script>: (Birthday 1 on any date <script type="math/tex">$B_1$</script>) and (Birthday 2 on any date other than <script type="math/tex">$B_1$</script>) and (Birthday 3 on any date other than <script type="math/tex">$B_1$</script>, <script type="math/tex">$B_2$</script>) and ... and (Birthday <script type="math/tex">$n$</script> on any day other than <script type="math/tex">$B_1,B_2,\ldots,B_{n-1}$</script>)
+
+<script type="math/tex">$P(A^c)= 1 \cdot \left(1 - \frac{1}{365}\right)\left(1 - \frac{2}{365}\right)\cdots\left(1 - \frac{n-1}{365}\right)$</script><p>If <script type="math/tex">$n=10$</script>, what is the chance? If <script type="math/tex">$n=30$</script>, what is the chance?</p>
+<p>We will do a Monte Carlo simulation to estimate the probability and compare with the calculation above.</p>
+</div><div class="code_block"><pre>no = 0   #variable for storing number of event occurence
+n = 60 #number of persons
+print(1 - np.prod(1-np.arange(1,n)/365)) #probability from expression
+
+for i in range(1000):
+  B = np.zeros(366)   #array to keep track of birthdays seen
+  for j in range(n): #generate birthdays for each person
+    Bi = uniform(365, 1) #i-th birthday
+    if B[Bi]  == 0:  #if Bi is seen for the first time
+      B[Bi] = 1  #make note that Bi has been seen
+    else:
+      no = no + 1   #if Bi has been seen before, then two birthdays are same 
+      break   #we can stop generating more birthdays and exit loop early
+
+print(no/1000) #probability estimate by Monte Carlo</pre></div><div class="markdown_block"><h1>Monty Hall problem</h1>
+<p>Here is the problem taken from the <a href="https://en.wikipedia.org/wiki/Monty_Hall_problem">Wiki page</a>.</p>
+<blockquote><p>Suppose you're on a game show, and you're given the choice of three doors: Behind one door is a car; behind the others, goats. You pick a door, say No. 1, and the host, who knows what's behind the doors, opens another door, say No. 3, which has a goat. He then says to you, "Do you want to pick door No. 2?" Is it to your advantage to switch your choice?</p>
+</blockquote>
+<p>The assumptions (also taken from <a href="https://en.wikipedia.org/wiki/Monty_Hall_problem">Wiki</a>) are as follows:</p>
+<ol>
+<li>Car and goats are placed at random behind the doors.</li>
+<li>Host always picks a door not chosen by contestant.</li>
+<li>Host always reveals a goat and not a car.</li>
+<li>Host always offers a choice to switch from the original door to the other closed door.</li>
+</ol>
+<p>Under the above assumptions, here are the probabilities of winning.</p>
+<p>P(win if contestant chooses to switch) = 2/3</p>
+<p>P(win if contestant does not switch) = 1/3</p>
+<p>You can see the Wiki page for the computation. Let us simulate and find the probability of winning under switch by Monte Carlo.</p>
+</div><div class="code_block"><pre>no = 0   #variable for storing number of event occurence
+for i in range(1000):
+  car_loc = uniform(3, 1)
+  if car_loc == 1:
+    goat1_loc = 2; goat2_loc = 3
+  elif car_loc == 2:
+    goat1_loc = 1; goat2_loc = 3
+  else:
+    goat1_loc = 1; goat2_loc = 2
+
+  contestant_orig = uniform(3, 1)
+  if contestant_orig == goat1_loc:
+    host_reveal_loc = goat2_loc; other_closed_door = car_loc
+  elif contestant_orig == goat2_loc:
+    host_reveal_loc = goat1_loc; other_closed_door = car_loc
+  else:
+    host_reveal_loc = goat1_loc; other_closed_door = goat2_loc
+  if other_closed_door == car_loc:
+    no = no + 1
+
+print(no/1000) #probability estimate by Monte Carlo</pre></div><div class="markdown_block"><h1>Polya's urn scheme</h1>
+<p>Suppose an urn contains <script type="math/tex">$r$</script> red and <script type="math/tex">$b$</script> blue balls. The experiment proceeds in multiple steps, where Step <script type="math/tex">$i$</script> is as follows:</p>
+<p>Step <script type="math/tex">$i$</script>: Draw a ball at random, note down its colour and replace it in the urn. Add <script type="math/tex">$c$</script> more balls of the same colour to the urn.</p>
+<p>Let <script type="math/tex">$R_i$</script> be the event that the <script type="math/tex">$i$</script>-th ball drawn is red. Let <script type="math/tex">$B_i$</script> be the event that the <script type="math/tex">$i$</script>-th abll drawn is black.</p>
+<p>Clearly, <script type="math/tex">$P(R_1) = \frac{r}{r+b}$</script> and <script type="math/tex">$P(B_1)=\frac{b}{r+b}$</script>. It is perhaps surprising that, irrespective of <script type="math/tex">$c$</script>, we have, for all <script type="math/tex">$i$</script>,</p>
+<p><script type="math/tex">$$P(R_i) = \frac{r}{r+b}, P(B_i) = \frac{b}{r+b}.$$</script>
+To prove the above, you can use induction. Assume that the above is true for <script type="math/tex">$i$</script> and show it is true for <script type="math/tex">$i+1$</script>. Starting with <script type="math/tex">$i=1$</script>, by induction, the statement becomes true.</p>
+<p>We will setup a Monte Carlo simulation for verifying <script type="math/tex">$P(R_i)$</script> above for a few steps.</p>
+</div><div class="code_block"><pre>no = 0   #variable for storing number of event occurence
+r = 10; b = 5 #assume 1 to r is red and r+1 to r+b is blue
+print(r/(r+b))
+for i in range(1000):
+  r = 10; b = 5
+  c = 3
+  for j in range(5): #do 5 steps
+    if uniform(r+b, 1) <= r:
+      r = r + c
+    else:
+      b = b + c
+  if uniform(r+b, 1) <= r: #in the 6th step, count if red ball drawn
+    no = no + 1
+print(no/1000) #probability estimate by Monte Carlo</pre></div><div class="markdown_block"><h1>Gambler's ruin (simple random walk)</h1>
+<p>A gambler starting with <script type="math/tex">$k$</script> units of money plays the following game at a casino:</p>
+<ul>
+<li>If he has <script type="math/tex">$\ge 1$</script> units of money, a coin is tossed. If heads, the casino pays him 1 unit. If tails, he loses 1 unit to the casino.</li>
+<li>If he loses all money, he goes bankrupt and stops.</li>
+<li>If he gets <script type="math/tex">$N$</script> units of money, he wins and stops playing.</li>
+</ul>
+<p>If <script type="math/tex">$p$</script> is the probability of heads and <script type="math/tex">$q=1-p$</script>, it can be shown that</p>
+<p><script type="math/tex">$$\text{Pr}(\text{Bankruptcy})=\begin{cases}
+1-k/N,&\text{ if }p=q=1/2,\\
+\frac{\left(\dfrac{q}{p}\right)^k-\left(\dfrac{q}{p}\right)^N}{1-\left(\dfrac{q}{p}\right)^N}, &\text{ if }p\ne q.
+\end{cases}$$</script>
+You can see some details of the proof of the above in the <a href="https://en.wikipedia.org/wiki/Gambler%27s_ruin">Wiki page</a>. Suppose <script type="math/tex">$x_k$</script> denotes the probability of bankruptcy starting with <script type="math/tex">$k$</script> units. The main idea is to condition on the first toss and derive the following recursive equation:</p>
+<p><script type="math/tex">$$\begin{align}
+x_k&=P(\text{Bankruptcy}\ |\ \text{first toss is head})\ p\ +\ P(\text{Bankruptcy}\ |\ \text{first toss is tail})\ q\\
+&=x_{k+1}p+x_{k-1}q
+\end{align}$$</script>
+with boundary conditions <script type="math/tex">$x_0=1$</script> and <script type="math/tex">$x_N=0$</script>. Solution of the recursive equation results in the above closed form expression for <script type="math/tex">$x_k$</script>.</p>
+<p>We are interested in Monte Carlo simulation of Gambler's ruin and verification of the formula for <script type="math/tex">$x_k$</script>. First, we consider the case <script type="math/tex">$p=1/2$</script>.</p>
+</div><div class="code_block"><pre>no = 0   #variable for storing number of event occurence
+k = 5; N = 10
+print(1-k/N)
+for i in range(1000):
+  k = 5
+  while k > 0 and k < N:
+    if uniform(2, 1) == 1:
+      k = k + 1
+    else:
+      k = k - 1
+  if k == 0:
+    no = no + 1
+print(no/1000) #probability estimate by Monte Carlo</pre></div><div class="markdown_block"><h1>Toss a biased coin</h1>
+<p>For <script type="math/tex">$p\ne q$</script>, we require a method to toss a biased coin. This is accomplished by the following function that generates <script type="math/tex">$m$</script> coin tosses with probability of heads equal to <script type="math/tex">$p$</script>. Note that a value of 1 represents heads and 2 represents tails as before.</p>
+</div><div class="code_block"><pre>def biased(p, m):
+  return 2-(np.random.rand(m) < p)</pre></div><div class="code_block"><pre>no_heads = 0   #variable for storing number of heads
+p = 0.25
+print(p)
+for i in range(1000):
+  if biased(p, 1) == 1:
+    no_heads = no_heads + 1
+print(no_heads/1000) #probability estimate by Monte Carlo</pre></div><div class="markdown_block"><h1>Biased Gambler's ruin</h1>
+<p>We now simulate the biased version of Gambler's ruin.</p>
+</div><div class="code_block"><pre>no = 0   #variable for storing number of event occurence
+p = 0.35
+qbyp = (1-p)/p
+k = 5; N = 10
+print((qbyp**k-qbyp**N)/(1-qbyp**N))
+for i in range(1000):
+  k = 5
+  while k > 0 and k < N:
+    if biased(p, 1) == 1:
+      k = k + 1
+    else:
+      k = k - 1
+  if k == 0:
+    no = no + 1
+print(no/1000) #probability estimate by Monte Carlo</pre></div><div class="markdown_block"><h1>Casino die game</h1>
+<p>Throw a pair of die. A player bets <script type="math/tex">$k_1$</script> units of money on whether the sum of the two numbers is Under 7 or Over 7, and <script type="math/tex">$k_2$</script> units on Equal to 7. For Under 7 and Over 7, the returns are <script type="math/tex">$a$</script>:1, while, for Equal to 7, the returns are <script type="math/tex">$b$</script>:1, if the player wins the bet. If the bet is lost, the unit of money goes to the casino.</p>
+<p>The strategy for betting will be to independently and randomly select one of the 3 bets. The simulation will track the average return over a large number of trails.</p>
+</div><div class="code_block"><pre>a = 1.0; b = 4.0
+k1 = 1; k2 = 1
+print((((a-1)*5-7)*k1+((b-1)-5)*k2)/6/3) #expected gain
+avg_return = 0
+for i in range(1000):
+  bet = uniform(3,1) #1 - Under 7, 2 - Over 7, 3 - Equal to 7
+  sum = uniform(6,1) + uniform(6,1)
+  if ((bet == 1) and (sum < 7)) or ((bet == 2) and (sum > 7)): #win for Under 7 or Over 7 bet
+    avg_return = avg_return + k1*(a-1)/1000
+  if (bet == 3) and (sum == 7): #win for Equal to 7 bet
+    avg_return = avg_return + k2*(b-1)/1000
+  if ((bet == 1) and (sum >= 7)) or ((bet == 2) and (sum <= 7)): #loss for Under 7 or Over 7 bet
+    avg_return = avg_return + (-k1)/1000
+  if (bet == 3) and (sum != 7): #loss for Equal to 7 bet
+    avg_return = avg_return + (-k2)/1000
+  
+print(avg_return) #simulated gain</pre></div><div class="markdown_block"><h1>Import statistics module</h1>
+<p>We will use scipy.stats, which has several functions for statistics and probability distributions.</p>
+</div><div class="code_block"><pre>import scipy.stats as st</pre></div><div class="markdown_block"><h1>Expected value of common distributions</h1>
+<p>The module has functions for generating binomial, geometric, Poisson and other distributions. We will generate a large number of samples and compute the average value and compare with the expected value.</p>
+</div><div class="code_block"><pre>#binomial(20,0.3)
+print(20*0.3) #expected value
+x = st.binom.rvs(20,0.3,size=1000)
+print(np.sum(x)/1000) #average value in simulation</pre></div><div class="code_block"><pre>#geometric(0.3)
+print(1/0.3) #expected value
+x = st.geom.rvs(0.3,size=1000)
+print(np.sum(x)/1000) #average value in simulation</pre></div><div class="code_block"><pre>#Poisson(6)
+print(6) #expected value
+x = st.poisson.rvs(6,size=1000)
+print(np.sum(x)/1000) #average value in simulation</pre></div><div class="markdown_block"><h1>Balls and bins</h1>
+<p>Suppose <script type="math/tex">$m$</script> balls are thrown independently and uniformly at random into <script type="math/tex">$n$</script> bins. We will compute the expected number of empty bins by simulation and compare with the theoretical value of <script type="math/tex">$n(1-1/n)^m\approx ne^{-m/n}$</script>.</p>
+</div><div class="code_block"><pre>m = 10; n = 3
+print(n*((1-1/n)**m)) #expected value
+avg_empty_bins = 0
+for i in range(1000):
+  no_balls = np.zeros(n, dtype=int) #keep track of balls in bins
+  for ball in range(m):
+    bin = uniform(n, 1)
+    no_balls[bin-1] += 1
+
+  no_empty_bins = 0
+  for bin in range(n):
+    if no_balls[bin] == 0:
+      no_empty_bins += 1
+
+  avg_empty_bins += no_empty_bins/1000.0
+
+print(avg_empty_bins) #average value in simulation</pre></div><div class="markdown_block"><h1>Common continuous distributions and histograms</h1>
+<p>Scipy stats module can be used to generate samples from common continuous distributions. We will generate a number of such samples and plot their histogram to confirm that the samples follow the expected density function.</p>
+<p>For histograms, we will use the hist() function from the matplotlib.pyplot module imported below.</p>
+</div><div class="code_block"><pre>import matplotlib.pyplot as plt</pre></div><div class="markdown_block"><h2>Uniform distribution</h2>
+<p>We will begin with the uniform distribution.</p>
+</div><div class="code_block"><pre>x = st.uniform.rvs(0,3,size=10000)
+plt.hist(x,bins=50,range=(0,3),density=True) #blue histogram
+plt.plot([-0.2,0,0,3,3,3.2],[0,0,1.0/3,1.0/3,0,0],lw=2) #orange line. uniform[0,3] density
+plt.show()</pre></div><div class="markdown_block"><h2>From histogram to density</h2>
+<p>The code above generates 10000 samples that are supposed to be independent and uniformly distributed in <script type="math/tex">$[0,3]$</script>. The histogram, created using the plt.hist command, uses 100 bins of equal width in the range <script type="math/tex">$[0,3]$</script>. So, the bins are <script type="math/tex">$[0,0.03),[0.03,0.06),\ldots,[2.97,3]$</script>.</p>
+<p>Suppose the number of samples that fall into the bin <script type="math/tex">$[0,0.03]$</script> is <script type="math/tex">$N_0$</script>. Then, by Monte Carlo, we have that</p>
+<p><script type="math/tex">$$P(0<X\le 0.03)\approx \frac{N_0}{10000},$$</script> 
+where <script type="math/tex">$X$</script> is a random variable with the sample distribution. Assuming that the density of <script type="math/tex">$X$</script> satisfies <script type="math/tex">$f_X(x)\approx f_X(0.015)$</script> over the bin (<script type="math/tex">$0.015$</script> is the midpoint of the bin), we get</p>
+<p><script type="math/tex">$$P(0<X\le 0.03)\approx 0.03f_X(0.015)\approx\frac{N_0}{10000}.$$</script>
+Using the above, we get</p>
+<p><script type="math/tex">$$f_X(0.015)\approx\frac{N_0}{300}.$$</script> 
+Similarly, if <script type="math/tex">$N_i$</script> is the number of samples in the <script type="math/tex">$i$</script>-th bin with midpoint <script type="math/tex">$x_i$</script>, we have</p>
+<p><script type="math/tex">$$f_X(x_i)\approx\frac{N_i}{300}.$$</script>
+The option density=True in the plt.hist command specifies that the above calculation is to be done.</p>
+<p>The plt.plot command plots the expected PDF as a line plot. The parameter lw specifies the linewidth and 2 pts.</p>
+<p>Try changing the bin size to see how the plot changes. Does 50 bins look better? Why?</p>
+</div><div class="markdown_block"><h2>Exponential distribution</h2>
+<p>We will next repeat the same for <script type="math/tex">$X\sim$</script> Exp<script type="math/tex">$(\lambda)$</script>. The PDF is</p>
+<p><script type="math/tex">$$f_X(x)=\lambda\exp(-\lambda x),$$</script>
+where <script type="math/tex">$\lambda$</script> is called the scale parameter. Try changing the various parameters below to see what happens.</p>
+</div><div class="code_block"><pre>x = st.expon.rvs(scale=1,size=10000)
+plt.hist(x,bins=50,range=(0,10),density=True) #blue histogram
+xp = np.linspace(0,10,50)
+plt.plot(xp,st.expon.pdf(xp,scale=1),lw=2) #orange line, exp(\lambda) density
+plt.show()</pre></div><div class="markdown_block"><h2>Normal distribution</h2>
+<p>We will repeat the same for <script type="math/tex">$X\sim$</script> Normal<script type="math/tex">$(\mu,\sigma^2)$</script>. The PDF is</p>
+<p><script type="math/tex">$$f_X(x)=\frac{1}{\sigma\sqrt{2\pi}}\exp(-(x-\mu)^2/2\sigma^2),$$</script>
+where the mean <script type="math/tex">$\mu$</script> is called the location parameter `loc' and <script type="math/tex">$\sigma$</script> is called the scale parameter.</p>
+</div><div class="code_block"><pre>x = st.norm.rvs(loc=0, scale=1, size=10000)
+plt.hist(x,bins=50,range=(-5,5),density=True) #blue histogram
+xp = np.linspace(-5,5,50)
+plt.plot(xp,st.norm.pdf(xp,loc=0,scale=1),lw=2) #orange line, normal pdf
+plt.show()</pre></div><div class="code_block"><pre>from sklearn.datasets import load_iris</pre></div><div class="code_block"><pre>iris = load_iris()
+print(iris.DESCR)</pre></div><div class="code_block"><pre>plt.subplot(221)
+plt.hist(iris.data[:50,0])
+plt.xlim([0,6])
+plt.title('SL')
+plt.subplot(222)
+plt.hist(iris.data[:50,1])
+plt.xlim([0,6])
+plt.title('SW')
+plt.subplot(223)
+plt.hist(iris.data[:50,2])
+plt.xlim([0,6])
+plt.title('PL')
+plt.subplot(224)
+plt.hist(iris.data[:50,3])
+plt.xlim([0,6])
+plt.title('PW')
+plt.suptitle('Class 0')
+plt.tight_layout()
+plt.show()</pre></div>
+            </div>
+            </body>
+        
+        <script>
+function removeDollarSigns() {
+            var equations = document.querySelectorAll(".mjx-texatom");
+            equations.forEach(function (equation) {
+            equation.innerHTML = equation.innerHTML.replace(/\$/g, "");
+            });
+            }
+        </script>
+
+
+        </html>
+        

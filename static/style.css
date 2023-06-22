@@ -1,0 +1,137 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgb(30, 30, 40);;
+}
+.page {
+  margin: 2in;
+  width: 8.3in;
+  /* height: 11.7in; */
+  padding: 1.2in;
+  border-radius: 4px;
+  font-family: "Times New Roman", Times, serif;
+  
+  color: black;
+  background: #efefef; /* Old browsers */
+
+  box-shadow: 0 0 2px 0 #f4f4f6 inset,
+    0em 2px 0 rgba(255,255,255,.7),
+    0em 10px 80px -10px rgba(255,255,255,0.7),
+    0px -5px 25px 0px #808f8c
+    ;
+
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+     -ms-transition: all .5s ease;
+      -o-transition: all .5s ease;
+         transition: all .5s ease;
+}
+
+.page:hover{
+    transform: scale(1.02);
+}
+p {
+  color: #101010;
+  font-size: 14pt;
+}
+strong {
+  color: #202020;
+}
+
+H1 {
+  font-size: 28pt;
+}
+H2 {
+  font-size: 24pt;
+}
+H3 {
+  font-size: 20pt;
+}
+H4 {
+  font-size: 16pt;
+}
+H5 {
+  font-size: 14pt;
+}
+H6 {
+  font-size: 12pt;
+}
+a:link {
+  color: #d73a49;
+  /* color: #FF0F5F; */
+  text-decoration: none;
+}
+
+/* first h1 tag */
+.title {
+  margin-left: 20%;
+  width: 80%;
+  text-align: right;
+  padding-bottom: 0.2in;
+}
+.subtitle {
+  margin-left: 20%;
+  width: 80%;
+  text-align: right;
+  border-bottom: 1px solid black;
+  text-transform: uppercase;
+  padding-bottom: 0.2in;
+}
+
+/* print media */
+@media print {
+  body {
+    width: 8.3in;
+    height: 11.7in;
+    background-color: white !important;
+    background: white;
+    padding: 0.8in;
+    page-break-after: avoid;
+  }
+  .page{
+        background-color: white !important;
+        background: white;
+        box-shadow: none;
+    }
+}
+
+.hljs{
+    border: 1px solid #b8c0c8;
+    padding: 0.2in;
+    background-color: transparent !important;
+    border-radius: 6px;
+    /* allow text wraping */
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.MathJax_Display, .MathJax_Preview { 
+    display: none !important; 
+}
+
+.latex-equation {
+    display: inline-block;
+}
+
+.hljs-ln-numbers {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    
+    text-align: center;
+    color: #b8c0c8;
+    border-right: 1px solid #b8c0c8;
+    padding: 0px 10px 0px 0px !important;
+    vertical-align: top;
+
+    /* your custom style here */
+}
+
+/* for block of code */
+.hljs-ln-code {
+    padding-left: 15px !important;
+}
